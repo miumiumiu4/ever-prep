@@ -67,7 +67,9 @@
   document.getElementById('title').textContent = P.title;
   document.getElementById('lead').textContent = P.lead;
   document.title = P.title + '｜集客戦略会議';
-  const mailParam = qs.get('m') || '';
+  // URLSearchParams は「+」をスペースに変えるので、メールだけは生の値を読む（UTAGEは %mail% を符号化せずに差し込む）
+  const raw = k => { const m = location.search.match(new RegExp('[?&]' + k + '=([^&]*)')); if (!m) return ''; try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; } };
+  const mailParam = raw('m');
   // UTAGEの差し込みが空のままだと %mail% が残るので、そのときは入れない
   if (mailParam && mailParam.indexOf('%') < 0) document.getElementById('mail').value = mailParam;
   const nameParam = (qs.get('n') || '').indexOf('%') < 0 ? (qs.get('n') || '') : '';
